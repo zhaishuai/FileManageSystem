@@ -1,0 +1,105 @@
+/* 
+  Debug.strings
+  OS_IEXT2
+
+  Created by jimzhai on 13-11-28.
+  Copyright (c) 2013年 com.jimzhai. All rights reserved.
+*/
+
+/* Debug Binary_operation
+ 
+ char path[] = "/Users/jimzhai/Documents/project Place/OS_IEXT2/test.txt";
+ fstream file(path,ios_base::in|ios_base::out|ios::trunc);
+ 
+ //file.seekg(1*1024,ios_base::cur);
+ BinaryBlock binary_block(2*1024);
+ for (int i = 0 ; i < 10 ; i++)
+ binary_block.change_block_bit(i);
+ binary_block.write_block(file);
+ binary_block.print_block();
+ file.close();
+ cout<<endl<<endl<<endl;
+ fstream file2(path,ios_base::in|ios_base::out);
+ file.seekg(0,ios_base::beg);
+ BinaryBlock binary_block2(2*2024);
+ binary_block2.read_a_piece_of_block(file2, 1024);
+ binary_block2.set(1024);
+ cout<<"----------------------------------"<<endl;
+ binary_block2.print_a_piece_of_block(1024);
+ cout<<endl<<"----------------------------------"<<endl;
+ binary_block2.write_a_piece_of_block(file2, 1024);
+ //binary_block2.print_block();
+ //binary_block.read_block(file);
+ //binary_block.print_block();
+ file2.close();
+ fstream file1(path,ios_base::in);
+ BinaryBlock binary_block1(2*1024);
+ binary_block1.read_block(file1);
+ binary_block1.print_block();
+ file1.close();
+ */
+
+
+vector<int> jj;
+for( int i = 0 ; i < 10;i++)
+jj.push_back(i);
+for (int i = 0; i < jj.size(); i++) {
+    if (i == 5) {
+        jj.erase(jj.begin() + i);
+    }
+    cout<<"size:"<<jj.size()<<endl;
+    cout<<"value:"<<jj[i]<<endl;
+}
+
+
+
+command:
+
+SuperBlock super_block;
+GroupDescriptor gdt;
+Inode dir_inode,root_inode;
+vector<Slide_block> slide_block_queue;
+vector<BigBlockLink> big_block_queue;
+vector<InodeSlideBlock>inode_slide_queue;
+__get_SuperBlock_GDT_Inode(super_block,gdt,dir_inode);
+unsigned int slide_group=0,inode_group=0;
+
+loading_slide_block(slide_block_queue,big_block_queue, slide_group,super_block, gdt);
+cout<<"slide_block_queue.size():"<<slide_block_queue.size()<<endl;
+loading_big_block_link(big_block_queue, slide_group, super_block, gdt);
+
+for (int i = 0 ; i < slide_block_queue.size();i++)
+cout<<i<<" start:"<<slide_block_queue[i].start<<"  count:"<<slide_block_queue[i].count<<"    start_groupth:"<<slide_block_queue[i].start_groupth<<"    end_groupth:"<<slide_block_queue[i].end_groupth<<endl;
+cout<<"-------------------------------------"<<endl;
+for (int i = 0 ; i < big_block_queue.size();i++)
+cout<<i<<" start:"<<big_block_queue[i].start<<"  count:"<<big_block_queue[i].count<<"    start_groupth:"<<big_block_queue[i].start_groupth<<"    end_groupth:"<<big_block_queue[i].end_groupth<<endl;
+
+
+
+
+//    cout<<"clear:+++++++++++++++++++++++++++++"<<endl;
+//    slide_block_queue.clear();
+//    loading_slide_block(slide_block_queue,big_block_queue,slide_group ,super_block, gdt);
+//
+//    for (int i = 0 ; i < slide_block_queue.size();i++)
+//        cout<<i<<" start:"<<slide_block_queue[i].start<<"  count:"<<slide_block_queue[i].count<<"    start_groupth:"<<slide_block_queue[i].start_groupth<<"    end_groupth:"<<slide_block_queue[i].end_groupth<<endl;
+//    cout<<"-------------------------------------"<<endl;
+//    for (int i = 0 ; i < big_block_queue.size();i++)
+//        cout<<i<<" start:"<<big_block_queue[i].start<<"  count:"<<big_block_queue[i].count<<"    start_groupth:"<<big_block_queue[i].start_groupth<<"    end_groupth:"<<big_block_queue[i].end_groupth<<endl;
+
+
+//    cout<<endl<<endl;
+
+loading_inode_slide_block(inode_slide_queue, inode_group, super_block, gdt);
+
+//    for (int i = 0 ; i < inode_slide_queue.size();i++)
+//        cout<<i<<" start:"<<inode_slide_queue[i].start<<"  count:"<<inode_slide_queue[i].count<<"    start_groupth:"<<inode_slide_queue[i].start_groupth<<"    end_groupth:"<<inode_slide_queue[i].end_groupth<<endl;
+//
+
+loading_root_inode(root_inode, super_block, gdt);
+
+
+
+__list_all_files_of_the_folder(dir_inode,super_block);
+
+
